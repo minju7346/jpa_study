@@ -13,6 +13,7 @@ import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.repository.OrderRepository;
+import jpabook.jpashop.repository.OrderSearch;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,7 +26,7 @@ public class OrderService {
 	private final ItemRepository itemRepository;
 
 	//주문
-	@Transactional
+	@Transactional // 영속성 컨텍스트를 이용할려면 식별자만 넘겨줘야함, 컨트롤러에서 찾아서 넘겨주면 영속성 이용 못함
 	public Long order(Long memberId, Long itemId, int count) {
 		//엔티티 조회
 		Member member = memberRepository.findOne(memberId);
@@ -55,8 +56,8 @@ public class OrderService {
 		order.cancel(); //더티체킹으로 직접 쿼리에 증가 안날려줘도 자동으로 변경된 값을 DB에 업데이트 해줌(JPA의 장점)
 	}
 
-	// //검색
-	// public List<Order> findOrder(OrderSearch orderSearch) {
-	// 	return orderRepository.findAll(orderSearch);
-	// }
+	//검색
+	public List<Order> findOrders(OrderSearch orderSearch) {
+		return orderRepository.findAllByString(orderSearch);
+	}
 }
